@@ -2,22 +2,22 @@
 # include <wchar.h>
 # include <stdbool.h>
 
-struct StrSlice
+StrSlice
 str_slice_from_nulterm(char *buf) {
     unsigned int i;
     char current = buf[0];
     for (i = 0; current != '\0'; i++) {
         current = buf[i];
     }
-    struct StrSlice str;
+    StrSlice str;
     str.bs.buf = buf;
     str.bs.len = i;
     return str;
 }
 
-struct StrSlice
-str_slice_new_unchecked(struct Bytes bytes) {
-    struct StrSlice str;
+StrSlice
+str_slice_new_unchecked(Bytes bytes) {
+    StrSlice str;
     str.bs = bytes;
     return str;
 }
@@ -27,7 +27,7 @@ str_slice_new_unchecked(struct Bytes bytes) {
 // 1... means oob
 // Can be checked by quick_validate_wide
 wint_t
-str_slice_get(struct StrSlice str, unsigned int n, unsigned char *size) {
+str_slice_get(StrSlice str, unsigned int n, unsigned char *size) {
     if (n >= str.bs.len) {
         *size = 0;
         return 1 << 31;
@@ -58,13 +58,13 @@ str_slice_get(struct StrSlice str, unsigned int n, unsigned char *size) {
 }
 
 void
-shift_str_slice(struct StrSlice *str, unsigned int n) {
+shift_str_slice(StrSlice *str, unsigned int n) {
     str->bs.buf = &str->bs.buf[n];
     str->bs.len -= n;
 }
 
 wint_t
-str_slice_next_char(struct StrSlice *str) {
+str_slice_next_char(StrSlice *str) {
     const unsigned char TMASK = 255 >> 2;
     if (str->bs.len == 0) {
         return ECHAR;

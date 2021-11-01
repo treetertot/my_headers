@@ -1,9 +1,9 @@
 # include "ustring.h"
 # include <stdlib.h>
 
-struct UString
+UString
 ustring_new(unsigned int chunk_size) {
-    struct UString string;
+    UString string;
     string.buf = NULL;
     string.len = 0;
     string.cap = 0;
@@ -26,7 +26,7 @@ create_head_byte(unsigned char num_bytes, wint_t codept) {
 }
 
 bool
-ustring_push(struct UString *string, wint_t codept) {
+ustring_push(UString *string, wint_t codept) {
     unsigned char num_bytes = wide_length_utf8(codept);
     // Exit for errors
     if (num_bytes == 0) {
@@ -56,12 +56,12 @@ ustring_push(struct UString *string, wint_t codept) {
 }
 
 void
-ustring_reserve(struct UString *string, unsigned int n) {
+ustring_reserve(UString *string, unsigned int n) {
     string->buf = realloc(string->buf, string->cap + n);
 }
 
 wint_t
-ustring_pop(struct UString *string) {
+ustring_pop(UString *string) {
     if (string->len == 0) {
         return ECHAR;
     }
@@ -73,6 +73,6 @@ ustring_pop(struct UString *string) {
             break;
         }
     }
-    struct StrSlice str = str_slice_new_unchecked(bytes_new((char *) &string->buf[string->len - num_bytes], num_bytes));
+    StrSlice str = str_slice_new_unchecked(bytes_new((char *) &string->buf[string->len - num_bytes], num_bytes));
     return str_slice_next_char(&str);
 }
